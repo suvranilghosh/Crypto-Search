@@ -21,8 +21,10 @@
     }
 </style>
 
+
 <div class = "container text-center">
     <h2>CryptoSearch</h2>
+   
     {% load static %}
     <!-- <div style="width: 32px; height: 32px; margin:auto;">
         <img src="{% static '/feelskek.png' %}">
@@ -40,6 +42,7 @@
             <button type="submit" class="btn btn-dark" style="background: #31c3a6;" >
                 <img src="https://svg-clipart.com/clipart/white/ktmN7fh-search-icon-white-one-clipart.png" width="20px"/>
             </button>
+            <!-- <p>LOLOK{{ data.id }} </p> -->
         <!-- <input type = "submit" value="search" > -->
         </div>
     </form>  
@@ -78,22 +81,23 @@
             </div>
         </th>
         <th>7D Price Chart</th>
+        {% for coin in data%}
         <tr><td></td>
-            <td class="text-muted small pl-4"> 1 </td>
-            <td> BTC 
-                <div class="small text-muted no-underline">Bitcoin</div>
+            <td class="text-muted small pl-4"> {{ forloop.counter }} </td>
+            <td> {{coin.symbol}} 
+                <div class="small text-muted no-underline">{{coin.name}}</div>
             </td>
-            <td class="text-right">$59,291.65</td>
-            <td class="text-right text-success">0.61%</td>
-            <td class="text-right">$1.11T</td>
-            <td class="text-right">$66.2B</td>
+            <td class="text-right">${{coin.quote.USD.price}}</td>
+            <td class="text-right {{coin.color}}">{{coin.quote.USD.percent_change_24h}}%</td>
+            <td class="text-right">${{coin.quote.USD.market_cap}}</td>
+            <td class="text-right">${{coin.quote.USD.volume_24h}}</td>
             <td class="text-right">
-                <div>18.7M</div>
-                <div class="small text-muted">/ 21M</div>
+                <div>{{coin.circulating_supply}}</div>
+                <div class="small text-muted">{{coin.max_supply}}</div>
             </td>
             <td>
                 <div class="text-muted">
-                89%
+                {{coin.supply_usage_percentage}}
                 </div>
             </td>
             <td>
@@ -104,7 +108,8 @@
                 </a>
             </td>
         </tr>
-        <tr><td></td>
+        {% endfor %}
+        <!-- <tr><td></td>
             <td class="text-muted small pl-4"> 2 </td>
             <td> ETH 
                 <div class="small text-muted no-underline">Ethereum</div>
@@ -313,7 +318,7 @@
                 </div>
                 </a>
             </td> 
-        </tr>
+        </tr> -->
     </table>
 </div>
 
