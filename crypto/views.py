@@ -1,9 +1,11 @@
 from .forms import TickerForm
 from .tiingo import get_meta_data, get_price_data
-from .cpc import top100
+from .cpc import top100, metaData, priceData
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+
+MAX_REQUEST = 1
 
 # Create your views here.
 def index(request):
@@ -17,16 +19,22 @@ def index(request):
     
     response = top100()
     data = response['data']
-    for coin in data:
-        coin['quote']['USD']['price'] = "{:,.2f}".format(float(coin['quote']['USD']['price']))
+    
+    i = 0
 
+    for coin in data:
+        tid = coin['symbol']
+        if i<MAX_REQUEST:
+            coin['logo'] = metaData(tid)['data'][tid]['logo']
+            i+=1
+        coin['quote']['USD']['price'] = "{:,.2f}".format(float(coin['quote']['USD']['price']))
         if coin['quote']['USD']['percent_change_24h'] > 0:
             coin['color'] = 'text-success'
         else:
             coin['color'] = 'text-danger'
 
         coin['quote']['USD']['percent_change_24h'] = "{:,.2f}".format(coin['quote']['USD']['percent_change_24h'])
-
+        
         if coin['quote']['USD']['market_cap'] >= 1000000000000:
             coin['quote']['USD']['market_cap'] = "{:.2f}".format(coin['quote']['USD']['market_cap']/1000000000000)+'T'
         elif coin['quote']['USD']['market_cap'] >= 1000000000:
@@ -81,8 +89,28 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+def ticker(request, tid): 
+    tid = tid.upper()
+    info = metaData(tid)
+    context = {}
+    context['ticker'] = tid
+    context['meta'] = info['data'][tid]
+    context['price'] = priceData(tid)['data'][tid]['quote']['USD']
+    for key in context['price']:
+        if key != 'last_updated':
+            context['price'][key] = "{:.2f}".format(float(context['price'][key]))
+        else:
+            dateTime = context['price'][key].split('T')
+            date = dateTime[0]
+            time = dateTime[1]
+            yyymmdd = date.split('-')
+            date = yyymmdd[1] + '.' + yyymmdd[2] + '.' + yyymmdd[0]
+            time = time.split('.')[0] + ' UTC'
+            context['price'][key] = date + ' on ' + time
+    # desc = coinData['description']
+    return render(request, 'ticker.html', context)
 
-
+'''
 def ticker(request, tid):
     context = {}
 
@@ -97,15 +125,8 @@ def ticker(request, tid):
     context['price']['close'] = "{:.2f}".format(float(context['price']['close']))
     context['price']['tradesDone'] = "{:.0f}".format(int(context['price']['tradesDone']))
     context['price']['volumeNotional'] = "{:.2f}".format(float(context['price']['volumeNotional']))
-    context['price']['volume'] = "{:.2f}".format(float(context['price']['volume']))   
+    context['price']['volume'] = "{:.2f}".format(float(context['price']['volume']))
+    # context['cpcMeta'] = metaData(tid)['data']
     # print(context['price']['date'])
     return render(request, 'ticker.html', context)
-
-def chartData(request):
-    context = {}
-    context = top100()
-    # coins = {}
-    # data[0]
-    # for x in data:
-    # print("**************",data[0]['symbol'],"**************")
-    return render(request, 'index.html', context)
+'''

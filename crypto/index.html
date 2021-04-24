@@ -7,8 +7,9 @@
     div.card1{
     border-radius: 15px;
     padding-top: 40px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 40px;
     box-shadow: 0 0px 20px 0 rgba(0,0,0,0.2);
     background-color: rgba(0,0,0,0.2);
     transition: 0.3s;
@@ -58,7 +59,7 @@
 
 
 <div class = "container text-left">
-    <div class="card1 bg-dark mb-3 border-info">
+    <div class="card1 bg-dark mb-5 border-info">
     <h5 class="h0 font-weight-bold">Top 100 Cryptocurrency Prices</h5>
     <div class="text-muted small">
         Updated 9 minutes ago
@@ -66,8 +67,8 @@
     <!-- <p> Description: {{ meta.description }} </p>
     <h4 style = "color: #8ddece;">Today's price data for {{ ticker }}</h4>
     <p> Last Updated: {{ price.date }}</p> -->
-    <table class = "table mx-auto border-dark text-light">
-        <th></th>
+    <table class = "table mx-auto border-dark text-light table-responsive">
+        <th ></th>
         <th></th>
         <th class="">Coin</th>
         <th class="text-right">Price</th>
@@ -81,9 +82,16 @@
             </div>
         </th>
         <th>7D Price Chart</th>
-        {% for coin in data%}
-        <tr><td></td>
-            <td class="text-muted small pl-4"> {{ forloop.counter }} </td>
+        {% for coin in data %}
+        <tr>
+            <td class="text-right-sm text-muted small pl-4 align-middle" >
+                {{ forloop.counter }}
+            </td>
+            <td>
+                {% if coin.logo %}
+                <img src = {{coin.logo}} style="width: 45px; height: 45px; margin:0 px;">
+                {% endif %}
+            </td>
             <td> {{coin.symbol}} 
                 <div class="small text-muted no-underline">{{coin.name}}</div>
             </td>

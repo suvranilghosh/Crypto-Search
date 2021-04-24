@@ -6,14 +6,6 @@ headers = {
     'Accepts': 'application/json',
 }
 
-params = {
-    'start': '1',
-    'limit': '100',
-    'convert': 'USD'
-}
-
-url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
-
 # response = requests.get(url, params = params, headers = headers).json()
 
 # print (response)
@@ -23,10 +15,23 @@ url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 #     print(x['symbol'],': {:.2f}'.format(float(x['quote']['USD']['price'])))
 
 def top100():
-    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+    params = {'start': '1', 'limit': '100', 'convert': 'USD'}
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
     response = requests.get(url, params = params, headers = headers).json()
     # print(response)
     return response
 
+def metaData(ticker):
+    params = {'symbol': ticker}
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info'
+    response = requests.get(url, params = params, headers = headers).json()
+    # print (response)
+    return response
+
+def priceData(ticker):
+    params ={'symbol':ticker}
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+    response = requests.get(url, params = params, headers = headers).json()
+    return response
 if __name__ == '__main__':
-    top100()
+    print(metaData('BTC'))
