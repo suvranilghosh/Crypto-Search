@@ -6,26 +6,55 @@
   .navbar-brand{
     color: #343434;
   }
+  .sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  }
+  .sticky + .content {
+  padding-top: 60px;
+  }
 </style>
 <style type="text/css">
   body {
-    background: #31c3a6;/*#31c3a6*/
+    background: #31c3a6;
   }
   nav {
     background: #31c3a6;
   }
-  
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark">
+
+<script>
+  window.onscroll = function() {myFunction()};
+  
+  var navbar = document.getElementById("navbar");
+  var sticky = navbar.offsetTop;
+  
+  function myFunction() {
+    if (window.pageYOffset >= sticky) {
+      navbar.classList.add("sticky")
+    } else {
+      navbar.classList.remove("sticky");
+    }
+  }
+</script>
+
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark active" href = "javascript:void(0)">
   <!-- <img class = "auto-fit" src="https://coin-tracker-public.s3-us-west-1.amazonaws.com/crypto-icons/cmc/64x64/1.png"> -->
-    <a class="navbar-brand" href="http://127.0.0.1:8000/crypto">CryptoSearch</a>
+    <a class="navbar-brand" href='/'>
+      <img src="{% static 'crypto/cslogo.png' %}" style = 'width: 40px; height: 40px; margin: 0px'>
+    </a>
+    <a class="navbar-brand" href="javascript:void(0)">
+      CryptoSearch
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="http://127.0.0.1:8000/crypto">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Screeners</a>

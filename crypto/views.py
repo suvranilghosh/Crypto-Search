@@ -1,32 +1,44 @@
 from .forms import TickerForm
-from .tiingo import get_meta_data, get_price_data
+from .tiingo import get_meta_data, get_price_data, get_graph, get_graph_mini
 from .cpc import top100, metaData, priceData
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponseNotFound
 
-MAX_REQUEST = 1
+import time
 
+MAX_REQUEST_LOGO = 1
+MAX_REQUEST_GRAPH = 1
 # Create your views here.
 def index(request):
     if request.method == 'POST':
         form = TickerForm(request.POST)
         if form.is_valid():
             ticker = request.POST['ticker']
-            return HttpResponseRedirect(ticker)
+            if metaData(ticker)['status']['error_code']!=400:
+                return HttpResponseRedirect(ticker)
+            else:
+                return render(request, 'notFound.html')
     else:  
         form = TickerForm()
-    
+
     response = top100()
     data = response['data']
-    
-    i = 0
+    top100symbols = ''
+    logoCount = 0
+    graphCount = 0
 
     for coin in data:
         tid = coin['symbol']
-        if i<MAX_REQUEST:
+        top100symbols += tid + 'usd'
+        if logoCount<MAX_REQUEST_LOGO:
             coin['logo'] = metaData(tid)['data'][tid]['logo']
-            i+=1
+            logoCount += 1
+
+        if graphCount<MAX_REQUEST_LOGO:
+            fig = get_graph_mini(tid)
+            coin['chart'] = fig
+            graphCount += 1
         coin['quote']['USD']['price'] = "{:,.2f}".format(float(coin['quote']['USD']['price']))
         if coin['quote']['USD']['percent_change_24h'] > 0:
             coin['color'] = 'text-success'
@@ -84,13 +96,13 @@ def index(request):
             coin['circulating_supply'] = "{:.2f}".format(coin['circulating_supply']/1000)+'K'
         else:
             coin['circulating_supply'] = "{:.2f}".format(coin['circulating_supply']/1000)
-        
     context = {'form': form, 'data': data}
     return render(request, 'index.html', context)
 
 
 def ticker(request, tid): 
     tid = tid.upper()
+    fig = get_graph(tid)
     info = metaData(tid)
     context = {}
     context['ticker'] = tid
@@ -107,9 +119,12 @@ def ticker(request, tid):
             date = yyymmdd[1] + '.' + yyymmdd[2] + '.' + yyymmdd[0]
             time = time.split('.')[0] + ' UTC'
             context['price'][key] = date + ' on ' + time
+    context['fig'] = fig
     # desc = coinData['description']
     return render(request, 'ticker.html', context)
 
+def error(request, tid):
+    return render(request, 'notFound.html')
 '''
 def ticker(request, tid):
     context = {}
