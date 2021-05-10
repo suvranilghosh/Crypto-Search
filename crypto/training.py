@@ -17,7 +17,7 @@ headers = {
 }
 
 def get_data():
-    url = "https://api.tiingo.com/tiingo/crypto/prices?tickers=ethusd&startDate=2019-03-29&resampleFreq=1440min"
+    url = "https://api.tiingo.com/tiingo/crypto/prices?tickers=ethusd&startDate=2021-04-29&resampleFreq=1440min"
     response = requests.get(url, headers = headers)
     tickerPrice = defaultdict(list)  
     priceData = response.json()[0]['priceData']
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     target_col = 'close'
     data = get_data()
     train, test = split_data(data, test_size = 0.1)
-    print(train)
+    # print(train)
     line_plot(train[target_col], test[target_col], 'training', 'test', title = 'test')
     # plt.show()
 
@@ -110,17 +110,20 @@ if __name__ == '__main__':
 
     
     train, test, X_train, X_test, y_train, y_test = prepare_data(data, target_col, window_len = window_len, zero_base = zero_base, test_size = test_size)
-    model = build_lstm_model(X_train, output_size=1, neurons=lstm_neurons, dropout = dropout, loss=loss, optimizer = optimizer)
-    history = model.fit(X_train, y_train, epochs = epochs, batch_size = batch_size, verbose = 1, shuffle = True)
-    targets = test[target_col][window_len:]
-    preds = model.predict(X_test).squeeze()
-    print(mean_absolute_error(preds, y_test))
+    # model = build_lstm_model(X_train, output_size=1, neurons=lstm_neurons, dropout = dropout, loss=loss, optimizer = optimizer)
+    # history = model.fit(X_train, y_train, epochs = epochs, batch_size = batch_size, verbose = 1, shuffle = True)
+    # targets = test[target_col][window_len:]
+    # preds = model.predict(X_test).squeeze()
+    # print(mean_absolute_error(preds, y_test))
 
     
-    preds = test[target_col].values[:-window_len] * (preds + 1)
-    preds = pd.Series(index=targets.index, data=preds)
-    line_plot(targets, preds, 'actual', 'prediction', lw=3)
-    plt.show()
+    # preds = test[target_col].values[:-window_len] * (preds + 1)
+    # preds = pd.Series(index=targets.index, data=preds)
+    # line_plot(targets, preds, 'actual', 'prediction', lw=3)
+    # plt.show()
+
+
+
     # train = tickerPrice['close'][:-int(length*split)]
     # test = tickerPrice['close'][-int(length*split):]
     
