@@ -1,19 +1,13 @@
 import requests
 import json
+from PIL import Image 
+import PIL 
+import time
 
 headers = {
     'X-CMC_PRO_API_KEY': 'ce2697eb-b5a1-43e3-800c-cfcc73debc90',
     'Accepts': 'application/json',
 }
-
-# response = requests.get(url, params = params, headers = headers).json()
-
-# print (response)
-# coins = response['data']
-
-# for x in coins:
-#     print(x['symbol'],': {:.2f}'.format(float(x['quote']['USD']['price'])))
-
 def top100():
     params = {'start': '1', 'limit': '100', 'convert': 'USD'}
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
@@ -28,11 +22,15 @@ def metaData(ticker):
     # print (response)
     return response
 
-def priceData(ticker):
-    params ={'symbol':ticker}
-    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-    response = requests.get(url, params = params, headers = headers).json()
-    return response
+#C:\Users\linar\Desktop\Spring 2021\Soft Engg\webAppProj\static\crypto\cslogo.png
+
 if __name__ == '__main__':
-    print(metaData('BTC'))
- 
+    # logo = Image.open("../AAVE.png")
+    # logo.show()
+    # data = top100()['data']
+    # for coin in data:
+    #     tid = coin['symbol']
+    #     img_data = requests.get(metaData(tid)['data'][tid]['logo']).content
+    #     with open(tid+'.png', 'wb') as handler:
+    #         handler.write(img_data)
+    #     time.sleep(3)
