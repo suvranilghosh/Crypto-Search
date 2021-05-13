@@ -1,2 +1,2 @@
 # Crypto Search
-A Django based cryptocurrency screening website with additional functionalities
+A Django based minimal cryptocurrency screening website with additional functionalities

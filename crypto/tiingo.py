@@ -14,8 +14,6 @@ headers = {
 
 def get_meta_data(ticker):
     url = "https://api.tiingo.com/tiingo/crypto?tickers={}".format(ticker.lower())
-    # print(ticker.lower())
-    # url = "https://api.tiingo.com/tiingo/daily/{}".format(ticker)
     response = requests.get(url, headers=headers)
     meta = response.json()[0]
     return meta

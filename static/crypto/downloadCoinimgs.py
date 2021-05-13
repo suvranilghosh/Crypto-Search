@@ -12,19 +12,16 @@ def top100():
     params = {'start': '1', 'limit': '100', 'convert': 'USD'}
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
     response = requests.get(url, params = params, headers = headers).json()
-    # print(response)
     return response
 
 def metaData(ticker):
     params = {'symbol': ticker}
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info'
     response = requests.get(url, params = params, headers = headers).json()
-    # print (response)
     return response
 
-#C:\Users\linar\Desktop\Spring 2021\Soft Engg\webAppProj\static\crypto\cslogo.png
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # logo = Image.open("../AAVE.png")
     # logo.show()
     # data = top100()['data']

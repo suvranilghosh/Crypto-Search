@@ -56,6 +56,7 @@
         outline: none;
     }
 </style>
+
 <button type="button" id="BackTop" class="toTop-arrow" style="z-index: 100;"></button>
 <script>
     $(function () {
@@ -73,96 +74,88 @@
 </script>
 
 <body  style = 'background-color: rgb(52, 58, 64)'>
-<div class = "container text-center">
-    <h2>CryptoSearch</h2>
-    {% load static %}
-    <form action = "/crypto/" method = "post" >
-        <div class="input-group-append" style="margin: 0; position: absolute; padding-top: 35px; left: 50%; margin-right: -50%; transform: translate(-50%, -50%)">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit" class="btn btn-dark" style="background: #31c3a6;" >
-                <img src="https://svg-clipart.com/clipart/white/ktmN7fh-search-icon-white-one-clipart.png" width="20px"/>
-            </button>
-        </div>
-    </form>  
-</div>
-
-
-<div class = "container text-left">
-    <div class="card1 bg-dark mb-5 border-info">
-        <h5 class="h0 font-weight-bold">Top 100 Cryptocurrency Prices</h5>
-        <div class="text-muted small">
-            Updated 9 minutes ago
-        </div>
-        <!-- <p> Description: {{ meta.description }} </p>
-        <h4 style = "color: #8ddece;">Today's price data for {{ ticker }}</h4>
-        <p> Last Updated: {{ price.date }}</p> -->
-        <table class = "table mx-auto border-dark text-light table-responsive">
-            <th ></th>
-            <th></th>
-            <th class="">Coin</th>
-            <th class="text-right">Price</th>
-            <th class="text-right">24h Change</th>
-            <th class="text-right">Market Cap</th>
-            <th class="text-right">24h Volume</th>
-            <th class="text-right text-center" colspan = "2">
-                <div>Supply</div>
-                <div class = "small text-muted font-weight-bold">
-                    Circulating / Max
-                </div>
-            </th>
-            <th>7D Price Chart</th>
-            {% for coin in data %}
-            <tr>
-                <td class="text-right-sm text-muted small pl-4 align-middle" >
-                    {{ forloop.counter }}
-                </td>
-                <td>
-                    {% if coin.logo %}
-                    <img src = {{coin.logo}} style="width: 45px; height: 45px; margin:0 px;">
-                    {% endif %}
-                </td>
-                <td><a href = '/crypto/{{ coin.symbol }}' style="color:#31c3a6;">         
-                        {{coin.symbol}} 
-                        <div class="small text-muted no-underline">{{coin.name}}</div>
-                    </a>
-                </td>
-                <td class="text-right">${{coin.quote.USD.price}}</td>
-                <td class="text-right {{coin.color}}">{{coin.quote.USD.percent_change_24h}}%</td>
-                <td class="text-right">${{coin.quote.USD.market_cap}}</td>
-                <td class="text-right">${{coin.quote.USD.volume_24h}}</td>
-                <td class="text-right">
-                    <div>{{coin.circulating_supply}}</div>
-                    <div class="small text-muted">{{coin.max_supply}}</div>
-                </td>
-                <td>
-                    <div class="text-muted">
-                    {{coin.supply_usage_percentage}}
-                    </div>
-                </td>
-                <td>
-                    <a href="/price/bitcoin?interval=1W">
-                    <div style=" margin:0 px;">
-                    {% if coin.chart %}
-                        {{coin.chart|safe}}
-                    {% endif %}
-                    </div>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div class = "container text-center">
+        <h2>CryptoSearch</h2>
+        {% load static %}
+        <form action = "/crypto/" method = "post" >
+            <div class="input-group-append" style="margin: 0; position: absolute; padding-top: 35px; left: 50%; margin-right: -50%; transform: translate(-50%, -50%)">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="btn btn-dark" style="background: #31c3a6;" >
+                    <img src="https://svg-clipart.com/clipart/white/ktmN7fh-search-icon-white-one-clipart.png" width="20px"/>
+                </button>
+            </div>
+        </form>  
     </div>
-    <div class="text-muted small text-right">
-        All data acquired from 
-        <a href = 'https://coinmarketcap.com/api/'>CoinMarketCap</a>
-        and
-        <a href = 'https://api.tiingo.com/'>Tiingo</a>
+
+
+    <div class = "container text-left">
+        <div class="card1 bg-dark mb-5 border-info">
+            <h5 class="h0 font-weight-bold">Top 100 Cryptocurrency Prices</h5>
+            <div class="text-muted small">
+                Updated 9 minutes ago
+            </div>
+            <table class = "table mx-auto border-dark text-light table-responsive">
+                <th></th>
+                <th></th>
+                <th class="">Coin</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">24h Change</th>
+                <th class="text-right">Market Cap</th>
+                <th class="text-right">24h Volume</th>
+                <th class="text-right text-center" colspan = "2">
+                    <div>Supply</div>
+                    <div class = "small text-muted font-weight-bold">
+                        Circulating / Max
+                    </div>
+                </th>
+                <th>7D Price Chart</th>
+                {% for coin in data %}
+                <tr>
+                    <td class="text-right-sm text-muted small pl-4 align-middle" >
+                        {{ forloop.counter }}
+                    </td>
+                    <td>
+                        {% if coin.logo %}
+                        <img src = {{coin.logo}} style="width: 45px; height: 45px; margin:0 px;">
+                        {% endif %}
+                    </td>
+                    <td><a href = '/crypto/{{ coin.symbol }}' style="color:#31c3a6;">         
+                            {{coin.symbol}} 
+                            <div class="small text-muted no-underline">{{coin.name}}</div>
+                        </a>
+                    </td>
+                    <td class="text-right">${{coin.quote.USD.price}}</td>
+                    <td class="text-right {{coin.color}}">{{coin.quote.USD.percent_change_24h}}%</td>
+                    <td class="text-right">${{coin.quote.USD.market_cap}}</td>
+                    <td class="text-right">${{coin.quote.USD.volume_24h}}</td>
+                    <td class="text-right">
+                        <div>{{coin.circulating_supply}}</div>
+                        <div class="small text-muted">{{coin.max_supply}}</div>
+                    </td>
+                    <td>
+                        <div class="text-muted">
+                        {{coin.supply_usage_percentage}}
+                        </div>
+                    </td>
+                    <td>
+                        <div style=" margin:0 px;">
+                            {% if coin.chart %}
+                                {{coin.chart|safe}}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="text-muted small text-right">
+            All data acquired from 
+            <a href = 'https://coinmarketcap.com/api/'>CoinMarketCap</a>
+            and
+            <a href = 'https://api.tiingo.com/'>Tiingo</a>
+        </div>
     </div>
-</div>
-
-
-
 </body>
 {% endblock %}
 

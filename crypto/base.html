@@ -41,7 +41,6 @@
 
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark active" href = "javascript:void(0)">
-  <!-- <img class = "auto-fit" src="https://coin-tracker-public.s3-us-west-1.amazonaws.com/crypto-icons/cmc/64x64/1.png"> -->
     <a class="navbar-brand" href='/'>
       <img src="{% static 'crypto/cslogo.png' %}" style = 'width: 40px; height: 40px; margin: 0px'>
     </a>
@@ -77,17 +76,16 @@
 </nav>
 
 <div class="p-5 mb-2 text-white bg-dark">
-<html lang = "en">
+  <html lang = "en">
     <head>
         <title>{% block title %}{% endblock %}</title>
         <meta charset = "utf-8">
         <link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     </head>
     <body>
         {% block content %}{% endblock %}
     </body>
-</html>
+  </html>
 </div>

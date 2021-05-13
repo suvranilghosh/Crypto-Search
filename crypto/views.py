@@ -1,14 +1,16 @@
-from .forms import TickerForm
-from .tiingo import get_meta_data, get_price_data, get_graph, get_graph_mini
-from .cpc import top100, metaData, priceData
+import time
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponseNotFound
+from PIL import Image
+from .forms import TickerForm
+from .tiingo import get_meta_data, get_price_data, get_graph, get_graph_mini
+from .cpc import top100, metaData, priceData
 
-import time
+# REDUCE VALUES FOR FASTER LOAD TIMES
+MAX_REQUEST_LOGO = 10
+MAX_REQUEST_GRAPH = 100
 
-MAX_REQUEST_LOGO = 1
-MAX_REQUEST_GRAPH = 1
 # Create your views here.
 def index(request):
     if request.method == 'POST':
@@ -18,7 +20,8 @@ def index(request):
             if metaData(ticker)['status']['error_code']!=400:
                 return HttpResponseRedirect(ticker)
             else:
-                return render(request, 'notFound.html')
+                context = {'ticker': ticker.upper()}
+                return render(request, 'notFound.html', context)
     else:  
         form = TickerForm()
 
@@ -35,7 +38,7 @@ def index(request):
             coin['logo'] = metaData(tid)['data'][tid]['logo']
             logoCount += 1
 
-        if graphCount<MAX_REQUEST_LOGO:
+        if graphCount<MAX_REQUEST_GRAPH:
             fig = get_graph_mini(tid)
             coin['chart'] = fig
             graphCount += 1
@@ -73,18 +76,19 @@ def index(request):
             coin['supply_usage_percentage'] = ''
             coin['max_supply'] = ''
         else:
-            perc = float(coin['circulating_supply'])/float(coin['max_supply']) * 100
-            coin['supply_usage_percentage'] = "{:.0f}".format(perc)+'%'
-            if coin['max_supply'] >= 1000000000000:
-                coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000000000)+'T'
-            elif coin['max_supply'] >= 1000000000:
-                coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000000)+'B'
-            elif coin['max_supply'] >= 1000000:
-                coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000)+'M'
-            elif coin['max_supply'] >= 1000:
-                coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000)+'K'
-            else:
-                coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000)
+            if float(coin['max_supply']) != 0:
+                perc = float(coin['circulating_supply'])/float(coin['max_supply']) * 100
+                coin['supply_usage_percentage'] = "{:.0f}".format(perc)+'%'
+                if coin['max_supply'] >= 1000000000000:
+                    coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000000000)+'T'
+                elif coin['max_supply'] >= 1000000000:
+                    coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000000)+'B'
+                elif coin['max_supply'] >= 1000000:
+                    coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000000)+'M'
+                elif coin['max_supply'] >= 1000:
+                    coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000)+'K'
+                else:
+                    coin['max_supply'] = '/ {:.2f}'.format(coin['max_supply']/1000)
 
         if coin['circulating_supply'] >= 1000000000000:
             coin['circulating_supply'] = "{:.2f}".format(coin['circulating_supply']/1000000000000)+'T'
@@ -120,28 +124,7 @@ def ticker(request, tid):
             time = time.split('.')[0] + ' UTC'
             context['price'][key] = date + ' on ' + time
     context['fig'] = fig
-    # desc = coinData['description']
     return render(request, 'ticker.html', context)
 
 def error(request, tid):
     return render(request, 'notFound.html')
-'''
-def ticker(request, tid):
-    context = {}
-
-    context['ticker'] = tid
-    context['meta'] = get_meta_data(tid)
-    context['meta']['baseCurrency'] = context['meta']['baseCurrency'].upper()
-
-    context['price'] = (get_price_data(tid))
-    context['price']['open'] = "{:.2f}".format(float(context['price']['open']))
-    context['price']['high'] = "{:.2f}".format(float(context['price']['high']))
-    context['price']['low'] = "{:.2f}".format(float(context['price']['low']))
-    context['price']['close'] = "{:.2f}".format(float(context['price']['close']))
-    context['price']['tradesDone'] = "{:.0f}".format(int(context['price']['tradesDone']))
-    context['price']['volumeNotional'] = "{:.2f}".format(float(context['price']['volumeNotional']))
-    context['price']['volume'] = "{:.2f}".format(float(context['price']['volume']))
-    # context['cpcMeta'] = metaData(tid)['data']
-    # print(context['price']['date'])
-    return render(request, 'ticker.html', context)
-'''
